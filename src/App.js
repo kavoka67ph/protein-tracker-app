@@ -37,16 +37,43 @@ function App() {
   });
   const [feedbackMessage, setFeedbackMessage] = useState(''); // State for feedback message
 
-  // State to manage the current screen ('home', 'tracking', or 'history') (Updated)
-  const [currentPage, setCurrentPage] = useState('home'); // Start on the home (target setting) screen
+  // State to manage the current screen ('home', 'tracking', 'history', 'about') (Updated)
+  const [currentPage, setCurrentPage] = useState('tracking'); // Start on the tracking screen as per screenshot layout
 
-  // --- Protein values per 100g for common foods ---
+   // State to toggle between general and Filipino food lists (Added)
+   const [showFilipinoFoods, setShowFilipinoFoods] = useState(false);
+
+
+  // --- Protein values per 100g for common foods (Expanded) ---
   const proteinPer100g = {
+    // General Meats
     chicken_breast: 31, // Approximate value
-    fish: 22, // Approximate value (can vary by type)
-    eggs: 13, // Approximate value (for about 2 medium eggs)
+    lean_beef: 26, // Approximate value for lean cuts
     pork: 27, // Approximate value (can vary by cut)
-    // Add more common protein sources here later
+    // General Fish & Seafood
+    salmon: 20, // Approximate value
+    // General Eggs & Dairy
+    eggs: 13, // Approximate value (for about 2 medium eggs)
+    greek_yogurt: 10, // Approximate value (plain, non-fat)
+    // General Plant-Based
+    tofu: 10, // Approximate value (firm)
+    lentils_cooked: 9, // Approximate value for cooked lentils
+    chickpeas_cooked: 7, // Approximate value for cooked chickpeas
+    quinoa_cooked: 4, // Approximate value for cooked quinoa
+    pumpkin_seeds: 30, // Approximate value (shelled)
+
+    // --- Filipino Specific Foods (Added) ---
+    chicken_manok: 31, // Assuming similar to chicken breast
+    pork_baboy: 27, // Assuming similar to general pork
+    beef_baka: 26, // Assuming similar to lean beef
+    bangus_milkfish: 24, // Approximate value
+    galunggong_round_scad: 21, // Approximate value
+    tilapia: 26, // Approximate value
+    itlog_eggs: 13, // Assuming similar to general eggs
+    gatas_ng_kalabaw: 4, // Approximate value (Carabao milk)
+    tokwa_tofu: 10, // Assuming similar to general tofu
+    monggo_mung_beans_cooked: 7, // Approximate value for cooked mung beans
+    malunggay_moringa_leaves: 2, // Approximate value (per 100g raw leaves)
   };
 
   // --- Logic for calculating suggested protein requirement ---
@@ -56,8 +83,8 @@ function App() {
       console.log('Missing inputs for calculation.');
       // Do not reset dailyTarget if manualTarget is set or if inputs are just temporarily missing
       if (manualTarget === '') {
-         // Optionally set to 0 or a default if all calculation inputs are empty
-         // setDailyTarget(0);
+          // Optionally set to 0 or a default if all calculation inputs are empty
+          // setDailyTarget(0);
       }
       return;
     }
@@ -85,7 +112,7 @@ function App() {
     if (gender === 'male') {
         multiplier *= 1.1; // Example: 10% higher for males
     }
-     // No adjustment needed for female based on this simple example
+      // No adjustment needed for female based on this simple example
 
     const suggestedTarget = Math.round(weightKg * multiplier); // Round to nearest whole number
     setDailyTarget(suggestedTarget);
@@ -98,7 +125,7 @@ function App() {
       if (manualTarget === '') { // Only auto-calculate if manual target is not set
           calculateSuggestedTarget();
       }
-  }, [height, weight, activityLevel, gender, manualTarget]); // Dependencies: recalculate if any of these change
+  }, [height, weight, activityLevel, gender, manualTarget, calculateSuggestedTarget]); // Dependencies: recalculate if any of these change, ADDED calculateSuggestedTarget
 
   // --- Effect to save user profile data to localStorage whenever it changes ---
   useEffect(() => {
@@ -215,45 +242,15 @@ function App() {
 
   // --- JSX structure for the UI layout ---
   return (
-    <div className="container mx-auto p-4 max-w-md"> {/* Removed pb-20 */}
-      <h1 className="text-2xl font-bold mb-6 text-center">Protein Tracker</h1>
-
-      {/* Inline Navigation Bar (Moved and Styled) */}
-       <div className="mb-6 p-4 border rounded-lg shadow-sm"> {/* Added styling */}
-           <div className="flex justify-around items-center h-16">
-               {/* Home Button */}
-               <button
-                   onClick={() => setCurrentPage('home')}
-                   className={`flex flex-col items-center justify-center text-gray-600 ${currentPage === 'home' ? 'text-blue-600' : ''}`}
-               >
-                   <i className="fas fa-home text-xl"></i> {/* Font Awesome Home icon */}
-                   <span className="text-xs">Home</span>
-               </button>
-               {/* Tracking Button */}
-               <button
-                   onClick={() => setCurrentPage('tracking')}
-                   className={`flex flex-col items-center justify-center text-gray-600 ${currentPage === 'tracking' ? 'text-green-600' : ''}`}
-               >
-                   <i className="fas fa-chart-bar text-xl"></i> {/* Font Awesome Chart icon */}
-                   <span className="text-xs">Tracking</span>
-               </button>
-               {/* History Button */}
-               <button
-                   onClick={() => setCurrentPage('history')}
-                   className={`flex flex-col items-center justify-center text-gray-600 ${currentPage === 'history' ? 'text-purple-600' : ''}`}
-               >
-                   <i className="fas fa-history text-xl"></i> {/* Font Awesome History icon */}
-                   <span className="text-xs">History</span>
-               </button>
-           </div>
-       </div>
+    <div className="container mx-auto p-4 max-w-md bg-gray-100 rounded-xl shadow-lg min-h-screen flex flex-col pb-20"> {/* Added background, rounded corners, shadow, min-h-screen, flex-col, ADDED pb-20 */}
+      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Protein Tracker</h1> {/* Adjusted text color */}
 
 
       {/* Conditional Rendering based on currentPage */}
       {currentPage === 'home' && (
         // --- Section for Daily Protein Requirement (Home Screen) ---
-        <div className="mb-6 p-4 border rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Daily Target</h2>
+        <div className="mb-6 p-4 bg-white rounded-lg shadow-md flex-grow"> {/* Styled background, rounded corners, shadow, flex-grow */}
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Daily Target</h2> {/* Adjusted text color */}
 
           {/* Inputs for Calculation */}
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -350,16 +347,16 @@ function App() {
             />
           </div>
 
-           {/* Display Daily Target on Home Screen */}
-            <div className="mt-4 text-lg font-medium text-center">
-              Daily Target: <span className="text-blue-600">{dailyTarget}</span> grams
+            {/* Display Daily Target on Home Screen */}
+            <div className="mt-4 text-lg font-medium text-center text-gray-800"> {/* Adjusted text color */}
+              Daily Target: <span className="text-blue-600 font-semibold">{dailyTarget}</span> grams {/* Added font-semibold */}
             </div>
 
-             {/* Button to go to Tracking (Added) */}
+              {/* Button to go to Tracking (Added) */}
             <div className="mt-6 text-center">
                 <button
                     onClick={() => setCurrentPage('tracking')}
-                    className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    className="w-full py-3 px-4 border border-transparent rounded-lg shadow-md text-base font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
                 >
                     Go to Tracking
                 </button>
@@ -371,16 +368,16 @@ function App() {
 
       {currentPage === 'tracking' && (
         // --- Section for Tracking Protein (Tracking Screen) ---
-        <div className="mb-6 p-4 border rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Track Protein</h2>
+        <div className="mb-6 p-4 bg-white rounded-lg shadow-md flex-grow flex flex-col items-center"> {/* Styled background, rounded corners, shadow, flex-grow, flex-col, items-center */}
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Track Protein</h2> {/* Adjusted text color */}
 
           {/* Display Daily Target in Tracking Section */}
-          <div className="mb-4 text-lg font-medium text-center">
-              Daily Target: <span className="text-blue-600">{dailyTarget}</span> grams
+          <div className="mb-4 text-lg font-medium text-center text-gray-800"> {/* Adjusted text color */}
+              Daily Target: <span className="text-blue-600 font-semibold">{dailyTarget}</span> grams {/* Added font-semibold */}
           </div>
 
           {/* Circular Progress Bar (Implemented using SVG) */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6"> {/* Removed mb-6, added to parent div */}
               <div className="relative w-40 h-40"> {/* Container for SVG and text */}
                   <svg className="w-full h-full" viewBox="0 0 160 160"> {/* SVG viewBox */}
                       {/* Background circle */}
@@ -410,7 +407,7 @@ function App() {
                       />
                   </svg>
                    {/* Text in the center of the circle */}
-                  <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
+                  <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-800"> {/* Adjusted text color */}
                       {totalConsumed}g
                   </div>
               </div>
@@ -418,7 +415,12 @@ function App() {
 
           {/* Display Percentage Achieved */}
           <div className="mb-4 text-center text-sm text-gray-600">
-              Achieved: <span className="font-semibold">{clampedProgress.toFixed(0)}%</span>
+              Achieved: <span className="font-semibold text-green-600">{clampedProgress.toFixed(0)}%</span> {/* Highlighted percentage */}
+          </div>
+
+          {/* Display Protein Remaining */}
+           <div className="mb-6 text-lg font-medium text-center text-gray-800"> {/* Adjusted text color, added mb-6 */}
+            Protein Remaining: <span className="text-orange-600 font-semibold">{proteinRemaining}</span> grams {/* Added font-semibold */}
           </div>
 
           {/* Feedback Message Display */}
@@ -428,25 +430,67 @@ function App() {
               </div>
           )}
 
+           {/* Checkbox to toggle Filipino Foods (Added) */}
+            <div className="mb-4 w-full"> {/* Added w-full */}
+                <label className="flex items-center text-sm font-medium text-gray-700">
+                    <input
+                        type="checkbox"
+                        checked={showFilipinoFoods}
+                        onChange={(e) => setShowFilipinoFoods(e.target.checked)}
+                        className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out rounded"
+                    />
+                    <span className="ml-2">Show Filipino Food Options</span>
+                </label>
+            </div>
+
 
           {/* Food Input */}
-          <div className="mb-4">
+          <div className="w-full mb-4"> {/* Added w-full */}
             <label htmlFor="foodType" className="block text-sm font-medium text-gray-700">Food Type</label>
              {/* This will be a select/dropdown with common protein sources */}
             <select
               id="foodType"
               value={foodType}
               onChange={(e) => setFoodType(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity50"
             >
               <option value="">Select food type</option>
-              {Object.keys(proteinPer100g).map(key => (
-                  <option key={key} value={key}>{key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</option> // Display formatted name
-              ))}
+              {/* Conditionally render options based on showFilipinoFoods */}
+              {showFilipinoFoods ? (
+                  // Filipino Food Options
+                  <>
+                    <option value="chicken_manok">Chicken (Manok)</option>
+                    <option value="pork_baboy">Pork (Baboy)</option>
+                    <option value="beef_baka">Beef (Baka)</option>
+                    <option value="bangus_milkfish">Bangus (Milkfish)</option>
+                    <option value="galunggong_round_scad">Galunggong (Round scad)</option>
+                    <option value="tilapia">Tilapia</option>
+                    <option value="itlog_eggs">Itlog (Eggs)</option>
+                    <option value="gatas_ng_kalabaw">Gatas ng kalabaw (Carabao’s milk)</option>
+                    <option value="tokwa_tofu">Tokwa (Tofu)</option>
+                    <option value="monggo_mung_beans_cooked">Monggo (Mung beans)</option>
+                    <option value="malunggay_moringa_leaves">Malunggay (Moringa leaves)</option>
+                  </>
+              ) : (
+                  // General Food Options
+                  <>
+                    <option value="chicken_breast">Chicken Breast</option>
+                    <option value="lean_beef">Lean Beef</option>
+                    <option value="salmon">Salmon</option>
+                    <option value="pork">Pork</option>
+                    <option value="eggs">Eggs</option>
+                    <option value="greek_yogurt">Greek Yogurt</option>
+                    <option value="tofu">Tofu</option>
+                    <option value="lentils_cooked">Lentils (cooked)</option>
+                    <option value="chickpeas_cooked">Chickpeas (cooked)</option>
+                    <option value="quinoa_cooked">Quinoa (cooked)</option>
+                    <option value="pumpkin_seeds">Pumpkin Seeds</option>
+                  </>
+              )}
             </select>
           </div>
 
-          <div className="mb-4">
+          <div className="w-full mb-4"> {/* Added w-full */}
             <label htmlFor="foodWeight" className="block text-sm font-medium text-gray-700">Weight (grams)</label>
             <input
               type="number"
@@ -460,33 +504,34 @@ function App() {
 
           <button
             onClick={handleAddProtein}
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            className="w-full py-3 px-4 border border-transparent rounded-lg shadow-md text-base font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
           >
             Add Protein
           </button>
 
           {/* Display Protein Remaining */}
-           <div className="mt-4 text-lg font-medium text-center">
-            Protein Remaining: <span className="text-orange-600">{proteinRemaining}</span> grams
+           <div className="mt-4 text-lg font-medium text-center text-gray-800"> {/* Adjusted text color */}
+            Protein Remaining: <span className="text-orange-600 font-semibold">{proteinRemaining}</span> grams {/* Added font-semibold */}
           </div>
 
           {/* Manual Daily Reset Button */}
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center w-full"> {/* Added w-full */}
               <button
                   onClick={handleDailyReset}
-                  className="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               >
                   Reset Daily Tracking
               </button>
           </div>
+
 
         </div>
       )}
 
        {currentPage === 'history' && (
             // --- Section for History (History Screen) ---
-            <div className="mb-6 p-4 border rounded-lg shadow-sm">
-                <h2 className="text-xl font-semibold mb-4">Today's Log</h2> {/* Title indicates it's today's history */}
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-md flex-grow"> {/* Styled background, rounded corners, shadow, flex-grow */}
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">Today's Log</h2> {/* Title indicates it's today's history, adjusted text color */}
 
                 {/* This section displays the addedItems list */}
                 {addedItems.length === 0 ? (
@@ -494,8 +539,8 @@ function App() {
                 ) : (
                   <ul>
                     {addedItems.map((item, index) => (
-                      <li key={index} className="mb-2 pb-2 border-b last:border-b-0 text-sm">
-                        {item.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}: {item.protein}g ({item.weight}g)
+                      <li key={index} className="mb-2 pb-2 border-b last:border-b-0 text-sm text-gray-700"> {/* Adjusted text color */}
+                        <span className="font-medium">{item.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>: {item.protein}g ({item.weight}g) {/* Highlighted food type */}
                       </li>
                     ))}
                   </ul>
@@ -503,14 +548,78 @@ function App() {
             </div>
        )}
 
+        {currentPage === 'about' && (
+            // --- Section for About (About Screen) ---
+            <div className="mb-6 p-4 bg-white rounded-lg shadow-md flex-grow"> {/* Styled background, rounded corners, shadow, flex-grow */}
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">About This App</h2> {/* Adjusted text color */}
 
-       {/* Basic Disclaimer (Visible on all screens) */}
-       <p className="text-center text-xs text-gray-500 mt-4"> {/* Removed mb-20 */}
-           Protein requirement calculation is a suggestion based on general guidelines and not medical advice. Consult a healthcare professional for personalized recommendations.
-       </p>
+                <p className="text-sm text-gray-700 mb-4">
+                    This app helps you track your daily protein intake and provides a suggested daily protein target based on general guidelines.
+                </p>
 
-       {/* Include Font Awesome Script */}
-       <FontAwesomeScript />
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">Protein Requirement Calculation</h3>
+                <p className="text-sm text-gray-700 mb-4">
+                    The suggested daily protein target is calculated based on your weight, gender, and activity level, using common recommendations often aligned with Recommended Dietary Allowances (RDA) or similar guidelines.
+                </p>
+                <ul className="text-sm text-gray-700 list-disc list-inside mb-4">
+                    <li>**Sedentary:** Approximately 0.8 grams of protein per kilogram of body weight.</li>
+                    <li>**Lightly Active:** Approximately 1.2 - 1.4 grams per kg.</li>
+                    <li>**Moderately Active:** Approximately 1.4 - 1.6 grams per kg.</li>
+                    <li>**Very Active:** Approximately 1.6 - 2.2 grams per kg.</li>
+                </ul>
+                   <p className="text-sm text-gray-700 mb-4">
+                    A slight adjustment is made for gender, with males typically having slightly higher requirements.
+                </p>
+
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">Disclaimer</h3>
+                {/* Basic Disclaimer (Moved to About Screen) */}
+               <p className="text-sm text-gray-500 italic"> {/* Adjusted styling */}
+                    Protein requirement calculation is a suggestion based on general guidelines and not medical advice. Consult a healthcare professional for personalized recommendations.
+               </p>
+            </div>
+        )}
+
+
+        {/* Fixed Bottom Navigation Bar (Corrected width and padding) */}
+       <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 shadow-lg"> {/* Corrected positioning and width */}
+            <div className="flex justify-around items-center h-16 px-4"> {/* Added px-4 for padding */}
+                {/* Home Button */}
+                <button
+                    onClick={() => setCurrentPage('home')}
+                    className={`flex flex-col items-center justify-center text-gray-600 hover:text-blue-600 transition-colors duration-200 ${currentPage === 'home' ? 'text-blue-600 font-semibold' : ''}`}
+                >
+                    <i className="fas fa-home text-xl mb-1"></i> {/* Font Awesome Home icon, added mb-1 for spacing */}
+                    <span className="text-xs">Home</span>
+                </button>
+                {/* Tracking Button */}
+                <button
+                    onClick={() => setCurrentPage('tracking')}
+                    className={`flex flex-col items-center justify-center text-gray-600 hover:text-green-600 transition-colors duration-200 ${currentPage === 'tracking' ? 'text-green-600 font-semibold' : ''}`}
+                >
+                    <i className="fas fa-chart-bar text-xl mb-1"></i> {/* Font Awesome Chart icon, added mb-1 for spacing */}
+                    <span className="text-xs">Tracking</span>
+                </button>
+                {/* History Button */}
+                <button
+                    onClick={() => setCurrentPage('history')}
+                    className={`flex flex-col items-center justify-center text-gray-600 hover:text-purple-600 transition-colors duration-200 ${currentPage === 'history' ? 'text-purple-600 font-semibold' : ''}`}
+                >
+                    <i className="fas fa-history text-xl mb-1"></i> {/* Font Awesome History icon, added mb-1 for spacing */}
+                    <span className="text-xs">History</span>
+                </button>
+                 {/* About Button (Added) */}
+                <button
+                    onClick={() => setCurrentPage('about')}
+                    className={`flex flex-col items-center justify-center text-gray-600 hover:text-gray-800 transition-colors duration-200 ${currentPage === 'about' ? 'text-gray-800 font-semibold' : ''}`}
+                >
+                    <i className="fas fa-info-circle text-xl mb-1"></i> {/* Font Awesome Info icon */}
+                    <span className="text-xs">About</span>
+                </button>
+            </div>
+        </div>
+
+        {/* Include Font Awesome Script */}
+        <FontAwesomeScript />
 
     </div>
   );
