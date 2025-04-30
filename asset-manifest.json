@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/protein-tracker-app/static/css/main.057326b7.css",
-    "main.js": "/protein-tracker-app/static/js/main.62a96a3e.js",
+    "main.css": "/protein-tracker-app/static/css/main.708bcb92.css",
+    "main.js": "/protein-tracker-app/static/js/main.3793996f.js",
     "static/js/453.0ba7678e.chunk.js": "/protein-tracker-app/static/js/453.0ba7678e.chunk.js",
     "index.html": "/protein-tracker-app/index.html",
-    "main.057326b7.css.map": "/protein-tracker-app/static/css/main.057326b7.css.map",
-    "main.62a96a3e.js.map": "/protein-tracker-app/static/js/main.62a96a3e.js.map",
+    "main.708bcb92.css.map": "/protein-tracker-app/static/css/main.708bcb92.css.map",
+    "main.3793996f.js.map": "/protein-tracker-app/static/js/main.3793996f.js.map",
     "453.0ba7678e.chunk.js.map": "/protein-tracker-app/static/js/453.0ba7678e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.057326b7.css",
-    "static/js/main.62a96a3e.js"
+    "static/css/main.708bcb92.css",
+    "static/js/main.3793996f.js"
   ]
 }
